@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">192.168.10.161</domain>
+        <domain includeSubdomains="true">192.168.103.79</domain>
+        <domain includeSubdomains="true">192.168.110.94</domain>
+        <domain includeSubdomains="true">192.168.2.12</domain>
+        <domain includeSubdomains="true">192.168.5.97</domain>
+        <domain includeSubdomains="true">192.168.130.186</domain>
+        <domain includeSubdomains="true">10.10.1.104</domain>
+        <domain includeSubdomains="true">10.10.1.91</domain>
+
+        <!-- DEPLOYMENT -->
+        <domain includeSubdomains="true">192.168.1.71</domain>
+        <domain includeSubdomains="true">192.168.11.45</domain>
+        <domain includeSubdomains="true">192.168.33.241</domain>
+        <domain includeSubdomains="true">192.168.30.143</domain>
+        <domain includeSubdomains="true">192.168.32.18</domain>
+        <domain includeSubdomains="true">192.168.30.190</domain>
+    </domain-config>
+</network-security-config>

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.lopez.julz.inspectionv2.database.ServiceConnectionsDao;
 import com.lopez.julz.inspectionv2.database.Settings;
 import com.lopez.julz.inspectionv2.helpers.ObjectHelpers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,7 +231,7 @@ public class Download extends AppCompatActivity {
                         serviceConnectionsDao.updateServiceConnections(localServiceConnections);
                     }
 
-                    notifyDownloaded(serviceConnectionsList.get(i).getServiceAccountName(), serviceConnectionsList.get(i).getContactNumber(), serviceConnectionsList.get(i).getId());
+//                    notifyDownloaded(serviceConnectionsList.get(i).getServiceAccountName(), serviceConnectionsList.get(i).getContactNumber(), serviceConnectionsList.get(i).getId());
                 }
 
                 return null;
@@ -242,8 +244,13 @@ public class Download extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
+            String data = convertListIdToString(serviceConnectionsList);
+
+            notifyDownloaded(data);
+
             serviceConnectionsList.clear();
             serviceConnectionsAdapter.notifyDataSetChanged();
+
 
             Snackbar.make(download_recyclerview, "All data downloaded", Snackbar.LENGTH_LONG).show();
         }
@@ -347,6 +354,7 @@ public class Download extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
+
             Log.e("INSPCT_DWNLD_STATUS", "Downloaded " + serviceConnectionInspectionsList.size() + " inspections data");
         }
     }
@@ -429,6 +437,56 @@ public class Download extends AppCompatActivity {
             } else {
                 startActivity(new Intent(Download.this, SettingsActivity.class));
             }
+        }
+    }
+
+    public String convertListIdToString(List<ServiceConnections> list) {
+        try {
+            String data = "";
+            int i=0;
+            int size = list.size();
+            for (ServiceConnections serviceConnection : list) {
+                if (i == (size -1)) {
+                    data += serviceConnection.getId();
+                } else {
+                    data += serviceConnection.getId() + ",";
+                }
+                i++;
+            }
+
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public void notifyDownloaded(String data) {
+        try {
+            Call<Void> notifCall = requestPlaceHolder.notifyDownloadedInspection(data);
+
+            notifCall.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.e("NOTIF_SUCCESS", "Downloaded data notified");
+                    } else {
+                        try {
+                            Log.e("NOTIF_ERROR", "Downloaded data error notifying: " + response.errorBody().string());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("NOTIF_ERROR", "Downloaded data error notifying: " + t.getMessage());
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

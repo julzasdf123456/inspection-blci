@@ -64,39 +64,16 @@ public class SettingsActivity extends AppCompatActivity {
     public void populateSpinners() {
         try {
             List<String> servers = new ArrayList<>();
-//            servers.add("192.168.100.10");
-//            servers.add("192.168.100.20");
-//            servers.add("192.168.100.30");
-//            servers.add("192.168.100.40");
-//            servers.add("192.168.100.50");
-//            servers.add("192.168.100.60");
-//            servers.add("192.168.100.70");
-//            servers.add("192.168.100.80");
-//            servers.add("192.168.100.90");
-//            servers.add("192.168.100.4");
-//            servers.add("192.168.100.1");
-//            servers.add("192.168.110.94");
-//            servers.add("203.177.135.179:8443");
-            servers.add("192.168.10.161");
-            servers.add("192.168.2.12");
-            servers.add("192.168.1.71");
-            servers.add("10.10.1.104");
-            servers.add("10.10.1.91");
+//            servers.add("192.168.10.161");
+//            servers.add("192.168.1.60");
+            servers.add("10.10.1.104:8004");
+            servers.add("10.10.1.38");
+            servers.add("192.168.12.200");
             ArrayAdapter serversAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, servers.toArray());
             serversAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             serverSelect.setAdapter(serversAdapter);
 
             List<String> office = new ArrayList<>();
-//            office.add("CADIZ");
-//            office.add("CALATRAVA");
-//            office.add("EB MAGALONA");
-//            office.add("ESCALANTE");
-//            office.add("MANAPLA");
-//            office.add("SAGAY");
-//            office.add("SAN CARLOS");
-//            office.add("TOBOSO");
-//            office.add("VICTORIAS");
-//            office.add("MO");
             office.add("MAIN OFFICE");
             ArrayAdapter officeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, office.toArray());
             officeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

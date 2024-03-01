@@ -432,8 +432,10 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                         load = "0" + load;
                     }
                     formContractedEnergy.setText(ObjectHelpers.getContractedEnergy(Double.valueOf(load), Double.valueOf(formRate.getText().toString())));
+                    formBillDeposit.setText("" + getBillDeposit(serviceConnections.getAccountType(), Double.valueOf(s.toString()), Double.valueOf(formRate.getText().toString())));
                 } else {
                     formContractedEnergy.setText("0");
+                    formBillDeposit.setText("0");
                 }
 
                 // CONTRACTED DEMAND
@@ -494,7 +496,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         try {
             this.mapboxMap = mapboxMap;
             mapboxMap.setStyle(new Style.Builder()
-                    .fromUri("mapbox://styles/julzlopez/ckavvidmh61bt1iqp2n1ilgec"), new Style.OnStyleLoaded() {
+                    .fromUri("mapbox://styles/julzlopez/ckahntemo048l1il7edks77wb"), new Style.OnStyleLoaded() {
                 @Override
                 public void onStyleLoaded(@NonNull Style style) {
                     setStyle(style);
@@ -1224,6 +1226,50 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
             }
         } else {
             return 0;
+        }
+    }
+
+    public double getBillDeposit(String consumerType, double totalLoad, double rate) {
+        try {
+            double PF_COM = .5;
+            double PF_RES = .35;
+            double DF = .8;
+            int COM_THRESHOLD = 10000;
+            int RES_THRESHOLD = 3000;
+            if (consumerType != null) {
+                if (consumerType.equals("COMMERCIAL")) {
+                    if (totalLoad > COM_THRESHOLD) {
+                        double excess = totalLoad - COM_THRESHOLD;
+                        double excessPF = excess * PF_COM;
+                        double wattage = (excessPF + COM_THRESHOLD) * DF;
+                        double deposit = (wattage * rate * 8 /* 8 hours */ * 26 /* 26 days */) / 1000;
+                        return Double.valueOf(ObjectHelpers.roundTwoNoComma(deposit));
+                    } else {
+                        double wattage = totalLoad * DF;
+                        double deposit = (wattage * rate * 8 /* 8 hours */ * 26 /* 26 days */) / 1000;
+                        return Double.valueOf(ObjectHelpers.roundTwoNoComma(deposit));
+                    }
+                } else if (consumerType.equals("RESIDENTIAL")) {
+                    if (totalLoad > RES_THRESHOLD) {
+                        double excess = totalLoad - RES_THRESHOLD;
+                        double excessPF = excess * PF_RES;
+                        double wattage = (excessPF + RES_THRESHOLD) * DF;
+                        double deposit = (wattage * rate * 8 /* 8 hours */ * 30 /* 30 days */) / 1000;
+                        return Double.valueOf(ObjectHelpers.roundTwoNoComma(deposit));
+                    } else {
+                        double wattage = totalLoad * DF;
+                        double deposit = (wattage * rate * 8 /* 8 hours */ * 30 /* 30 days */) / 1000;
+                        return Double.valueOf(ObjectHelpers.roundTwoNoComma(deposit));
+                    }
+                } else {
+                    return 0.0;
+                }
+            } else {
+                return  0.0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 

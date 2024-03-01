@@ -61,4 +61,7 @@ public interface RequestPlaceHolder {
 
     @POST("notify-downloaded-inspections")
     Call<Void> notifyDownloaded(@Query("ServiceAccountName") String ServiceAccountName, @Query("ContactNumber") String ContactNumber, @Query("id") String id);
+
+    @GET("update-downloaded-inspection")
+    Call<Void> notifyDownloadedInspection(@Query("Data") String Data);
 }

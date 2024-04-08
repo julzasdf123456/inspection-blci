@@ -2,7 +2,6 @@ package com.lopez.julz.inspectionv2;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -16,15 +15,12 @@ import androidx.room.Room;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -33,15 +29,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,15 +45,14 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.lopez.julz.inspectionv2.classes.MastPoleAdapters;
 import com.lopez.julz.inspectionv2.database.AppDatabase;
 import com.lopez.julz.inspectionv2.database.Blocks;
 import com.lopez.julz.inspectionv2.database.LocalServiceConnectionInspections;
 import com.lopez.julz.inspectionv2.database.LocalServiceConnections;
 import com.lopez.julz.inspectionv2.database.MastPoles;
+import com.lopez.julz.inspectionv2.database.Materials;
 import com.lopez.julz.inspectionv2.database.PayTransactions;
-import com.lopez.julz.inspectionv2.database.PayTransactionsDao;
 import com.lopez.julz.inspectionv2.database.Photos;
 import com.lopez.julz.inspectionv2.database.ServiceConnectionInspectionsDao;
 import com.lopez.julz.inspectionv2.database.ServiceConnectionsDao;
@@ -67,9 +62,6 @@ import com.lopez.julz.inspectionv2.helpers.AlertHelpers;
 import com.lopez.julz.inspectionv2.helpers.ObjectHelpers;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -85,10 +77,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.layers.Property;
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +93,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
 
     public AppDatabase db;
 
-    public MaterialButton minimize;
+    public MaterialButton minimize, minimize_materials;
     public LinearLayout form_hidable_svc_details;
     public MaterialCardView form_svc_details;
     public TextView form_name, form_address, form_svc_id, form_contact, form_title, svcDropLength, form_classification;
@@ -158,7 +146,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
 
     // Load profile and line
     public EditText formNumberOfLo, formNumberOfCo, formMotor, formTotalLoad, formContractedDemand, formContractedEnergy, formDistanceFromSecondary, formSizeOfSecondary, formFeeder;
-    public Spinner formZone, formBlock;
+    public Spinner formZone, formBlock, formAccountType;
 
     // SDW
     public RadioGroup formSdwType, formSdwHeight, formLoadType;
@@ -175,6 +163,16 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
     public List<Blocks> blocksList;
     ArrayAdapter<String> zonesAdapter;
     ArrayAdapter<String> blocksAdapter;
+    ArrayAdapter<String> meteringTypesAdapter;
+
+    public ListView filesList;
+
+    public MaterialButton clearAssessment;
+
+    public EditText materials_meterBaseSocket, materials_metalboxTypeA, materials_metalboxTypeB, materials_pipe, materials_entranceCap, materials_adapter, materials_locknot, materials_mailbox, materials_buckle, materials_pvcElbow, materials_stainlessStrap, materials_plyboard, materials_strainInsulator, materials_straindedWire8, materials_strandedWire6, materials_twistedWire6, materials_twistedWire4;
+    public EditText materials_compressionTapAsu, materials_compressionYtdTwoFifty, materials_compressionTapYtdThreeHundred, materials_compressionTapYtdTwoHundred, materials_compressionTapYtdOneFifty, materials_metalScrew, materials_electricalTape;
+
+    public Materials materials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +212,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         form_title = findViewById(R.id.form_title);
         formRate = findViewById(R.id.formRate);
         formBillDeposit = findViewById(R.id.formBillDeposit);
+        filesList = findViewById(R.id.filesList);
 
         formBreakerRatingInstalled = (EditText) findViewById(R.id.formBreakerRatingInstalled);
         formBreakerBranchesInstalled = (EditText) findViewById(R.id.formBreakerBranchesInstalled);
@@ -225,6 +224,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         formGeoMeteringPole = (EditText) findViewById(R.id.formGeoMeteringPole);
         formSEPole = (EditText) findViewById(R.id.formSEPole);
         formGeoBuilding = (EditText) findViewById(R.id.formGeoBuilding);
+        clearAssessment = findViewById(R.id.clearAssessment);
 
         //SL Poles Inits
         formLiftPolesDiameterGI = (EditText) findViewById(R.id.formLiftPolesDiameterGI);
@@ -238,6 +238,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         formLiftPolesQuantityHardWood = (EditText) findViewById(R.id.formLiftPolesQuantityHardWood);
         formLiftPolesRemarks = (EditText) findViewById(R.id.formLiftPolesRemarks);
         formPoleNo = findViewById(R.id.formPoleNo);
+        formAccountType = findViewById(R.id.formAccountType);
 
         formRecommendation = (RadioGroup) findViewById(R.id.formRecommendation);
         formReverificationRemarks = (EditText) findViewById(R.id.formReverificationRemarks);
@@ -283,6 +284,35 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         formZone = findViewById(R.id.formZone);
         formBlock = findViewById(R.id.formBlock);
         formFeeder = findViewById(R.id.formFeeder);
+        minimize_materials = findViewById(R.id.minimize_materials);
+
+        /**
+         * MATERIALS
+         */
+        materials_meterBaseSocket = findViewById(R.id.materials_meterBaseSocket);
+        materials_metalboxTypeA = findViewById(R.id.materials_metalboxTypeA);
+        materials_metalboxTypeB = findViewById(R.id.materials_metalboxTypeB);
+        materials_pipe = findViewById(R.id.materials_pipe);
+        materials_entranceCap = findViewById(R.id.materials_entranceCap);
+        materials_adapter = findViewById(R.id.materials_adapter);
+        materials_locknot = findViewById(R.id.materials_locknot);
+        materials_mailbox = findViewById(R.id.materials_mailbox);
+        materials_buckle = findViewById(R.id.materials_buckle);
+        materials_pvcElbow = findViewById(R.id.materials_pvcElbow);
+        materials_stainlessStrap = findViewById(R.id.materials_stainlessStrap);
+        materials_plyboard = findViewById(R.id.materials_plyboard);
+        materials_strainInsulator = findViewById(R.id.materials_strainInsulator);
+        materials_straindedWire8 = findViewById(R.id.materials_straindedWire8);
+        materials_strandedWire6 = findViewById(R.id.materials_strandedWire6);
+        materials_twistedWire6 = findViewById(R.id.materials_twistedWire6);
+        materials_twistedWire4 = findViewById(R.id.materials_twistedWire4);
+        materials_compressionTapAsu = findViewById(R.id.materials_compressionTapAsu);
+        materials_compressionYtdTwoFifty = findViewById(R.id.materials_compressionYtdTwoFifty);
+        materials_compressionTapYtdThreeHundred = findViewById(R.id.materials_compressionTapYtdThreeHundred);
+        materials_compressionTapYtdTwoHundred = findViewById(R.id.materials_compressionTapYtdTwoHundred);
+        materials_compressionTapYtdOneFifty = findViewById(R.id.materials_compressionTapYtdOneFifty);
+        materials_metalScrew = findViewById(R.id.materials_metalScrew);
+        materials_electricalTape = findViewById(R.id.materials_electricalTape);
 
 
         /**
@@ -313,7 +343,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         saveBtn = (FloatingActionButton) findViewById(R.id.saveBtn);
 
         photoArea = findViewById(R.id.photoArea);
-        photoArea.setVisibility(View.GONE);
+//        photoArea.setVisibility(View.GONE);
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,6 +370,13 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                     form_hidable_svc_details.setVisibility(View.VISIBLE);
                     minimize.setIcon(getDrawable(R.drawable.ic_round_minimize_24));
                 }
+            }
+        });
+
+        minimize_materials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
@@ -453,6 +490,44 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        filesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                String info = ( (TextView) arg1 ).getText().toString();
+//                Toast.makeText(FormEdit.this, info, Toast.LENGTH_SHORT).show();
+
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/" + serviceConnections.getId() + "/" + info);
+
+                String extension = "";
+                int lastDotIndex = info.lastIndexOf('.');
+                if (lastDotIndex > 0) {
+                    extension = info.substring(lastDotIndex + 1);
+                }
+
+                if (extension != null && extension.equals("pdf")) {
+                    Intent intent = new Intent(FormEdit.this, PdfViewerActivity.class);
+                    intent.putExtra("PDF_PATH", info);
+                    intent.putExtra("SC_ID", serviceConnections.getId());
+                    startActivity(intent);
+                } else if (extension != null && (extension.equals("jpeg") | extension.equals("jpg") | extension.equals("png") | extension.equals("webp"))) {
+                    Intent intent = new Intent(FormEdit.this, ImageViewerActivity.class);
+                    intent.putExtra("IMG_PATH", info);
+                    intent.putExtra("SC_ID", serviceConnections.getId());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(FormEdit.this, "No application can open this file", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        clearAssessment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                formRecommendation.check(-1);
             }
         });
 
@@ -669,6 +744,9 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                 // DEPOSITS
                 totalPayments = db.totalPaymentsDao().getOneByServiceConnectionId(strings[0]);
                 payTransactions = db.payTransactionsDao().getOneByServiceConnectionId(strings[0]);
+
+                // material presets
+                materials = db.materialsDao().getOneByServiceConnectionId(strings[0]);
             } catch (Exception e) {
                 Log.e("ERR_GET_SVC_FORM", e.getMessage());
             }
@@ -689,6 +767,35 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                     form_contact.setText(serviceConnections.getContactNumber());
                     form_classification.setText(serviceConnections.getAccountType());
                     form_title.setText(serviceConnections.getAccountApplicationType());
+
+                    getFiles();
+                }
+
+                if (materials != null) {
+                    materials_meterBaseSocket.setText(materials.getMeterBaseSocket());
+                    materials_metalboxTypeA.setText(materials.getMetalboxTypeA());
+                    materials_metalboxTypeB.setText(materials.getMetalboxTypeB());
+                    materials_pipe.setText(materials.getPipe());
+                    materials_entranceCap.setText(materials.getEntranceCap());
+                    materials_adapter.setText(materials.getAdapter());
+                    materials_locknot.setText(materials.getLocknot());
+                    materials_mailbox.setText(materials.getMailbox());
+                    materials_buckle.setText(materials.getBuckle());
+                    materials_pvcElbow.setText(materials.getPvcElbow());
+                    materials_stainlessStrap.setText(materials.getStainlessStrap());
+                    materials_plyboard.setText(materials.getPlyboard());
+                    materials_strainInsulator.setText(materials.getStrainInsulator());
+                    materials_straindedWire8.setText(materials.getStraindedWireEight());
+                    materials_strandedWire6.setText(materials.getStrandedWireSix());
+                    materials_twistedWire4.setText(materials.getTwistedWireFour());
+                    materials_twistedWire6.setText(materials.getTwistedWireSix());
+                    materials_compressionTapAsu.setText(materials.getCompressionTapAsu());
+                    materials_compressionYtdTwoFifty.setText(materials.getCompressionTapYtdTwoFifty());
+                    materials_compressionTapYtdThreeHundred.setText(materials.getCompressionTapYtdThreeHundred());
+                    materials_compressionTapYtdTwoHundred.setText(materials.getCompressionTapYtdTwoHundred());
+                    materials_compressionTapYtdOneFifty.setText(materials.getCompressionTapYtdOneFifty());
+                    materials_metalScrew.setText(materials.getMetalScrew());
+                    materials_electricalTape.setText(materials.getElectricalTape());
                 }
 
                 if (payTransactions != null) {
@@ -767,6 +874,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                     formZone.setSelection(zonesAdapter.getPosition(serviceConnectionInspections.getZone()));
                     formBlock.setSelection(blocksAdapter.getPosition(serviceConnectionInspections.getBlock()));
                     formFeeder.setText(serviceConnectionInspections.getFeeder());
+                    formAccountType.setSelection(meteringTypesAdapter.getPosition(serviceConnectionInspections.getMeteringType()));
 
                     // STATUS
                     if (null==serviceConnectionInspections.getStatus()) {
@@ -831,6 +939,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                     }
 
                     formReverificationRemarks.setText(serviceConnectionInspections.getNotes());
+
                 }
             } catch (Exception e) {
                 Log.e("ERR_GET_INSP", e.getMessage());
@@ -1097,6 +1206,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
             serviceConnectionInspections.setBlock(formBlock.getSelectedItem().toString());
             serviceConnectionInspections.setFeeder(formFeeder.getText().toString());
             serviceConnectionInspections.setBillDeposit(formBillDeposit.getText().toString());
+            serviceConnectionInspections.setMeteringType(formAccountType.getSelectedItem().toString());
 
             /**
              * SDW
@@ -1118,6 +1228,39 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
             serviceConnectionInspections.setWrittenConsentByPropertyOwner(ObjectHelpers.getSelectedTextFromRadioGroup(formWrittenConsentByPropertyOwner, getWindow().getDecorView()));
             serviceConnectionInspections.setObstructionOfLines(ObjectHelpers.getSelectedTextFromRadioGroup(formObstructionOfLines, getWindow().getDecorView()));
             serviceConnectionInspections.setLinePassingRoads(ObjectHelpers.getSelectedTextFromRadioGroup(formLinePassingRoads, getWindow().getDecorView()));
+
+            // material presets
+            if (materials != null) {
+
+            } else {
+                materials = new Materials();
+                materials.setId(ObjectHelpers.generateIDandRandString());
+                materials.setServiceConnectionId(svcId);
+            }
+            materials.setMeterBaseSocket(materials_meterBaseSocket.getText().toString());
+            materials.setMetalboxTypeA(materials_metalboxTypeA.getText().toString());
+            materials.setMetalboxTypeB(materials_metalboxTypeB.getText().toString());
+            materials.setPipe(materials_pipe.getText().toString());
+            materials.setEntranceCap(materials_entranceCap.getText().toString());
+            materials.setAdapter(materials_adapter.getText().toString());
+            materials.setLocknot(materials_locknot.getText().toString());
+            materials.setMailbox(materials_mailbox.getText().toString());
+            materials.setBuckle(materials_buckle.getText().toString());
+            materials.setPvcElbow(materials_pvcElbow.getText().toString());
+            materials.setStainlessStrap(materials_stainlessStrap.getText().toString());
+            materials.setPlyboard(materials_plyboard.getText().toString());
+            materials.setStrainInsulator(materials_strainInsulator.getText().toString());
+            materials.setStraindedWireEight(materials_straindedWire8.getText().toString());
+            materials.setStrandedWireSix(materials_strandedWire6.getText().toString());
+            materials.setTwistedWireSix(materials_twistedWire6.getText().toString());
+            materials.setTwistedWireFour(materials_twistedWire4.getText().toString());
+            materials.setCompressionTapAsu(materials_compressionTapAsu.getText().toString());
+            materials.setCompressionTapYtdTwoFifty(materials_compressionYtdTwoFifty.getText().toString());
+            materials.setCompressionTapYtdThreeHundred(materials_compressionTapYtdThreeHundred.getText().toString());
+            materials.setCompressionTapYtdTwoHundred(materials_compressionTapYtdTwoHundred.getText().toString());
+            materials.setCompressionTapYtdOneFifty(materials_compressionTapYtdOneFifty.getText().toString());
+            materials.setMetalScrew(materials_metalScrew.getText().toString());
+            materials.setElectricalTape(materials_electricalTape.getText().toString());
 
             super.onPreExecute();
         }
@@ -1150,6 +1293,10 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                         db.payTransactionsDao().insertAll(payTransactions);
                     }
                 }
+
+                if (materials != null) {
+                    db.materialsDao().insertAll(materials);
+                }
             } catch (Exception e) {
                 Log.e("ERR_SV_INSP", e.getMessage());
             }
@@ -1169,8 +1316,10 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
         if (recommendation != null) {
             if (recommendation.equals("Approved")) {
                 return R.id.opsApproved;
-            } else {
+            } else if (recommendation.equals("Re-Inspection")) {
                 return R.id.opsReInspection;
+            } else {
+                return -1;
             }
         } else {
             return 0;
@@ -1320,7 +1469,7 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                     String scId = strings[0];
                     String photo = strings[1];
 
-                    Photos photoObject = new Photos(photo, scId);
+                    Photos photoObject = new Photos(photo, scId, null);
                     db.photosDao().insertAll(photoObject);
                 }
             } catch (Exception e) {
@@ -1446,9 +1595,47 @@ public class FormEdit extends AppCompatActivity implements PermissionsListener, 
                         android.R.layout.simple_spinner_item, blocks);
                 blocksAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 formBlock.setAdapter(blocksAdapter);
+
+                /**
+                 * Account Type
+                 */
+                String[] meteringTypes = { "RESIDENTIAL", "COMMERCIAL LV", "COMMERCIAL HV", "INDUSTRIAL LV", "INDUSTRIAL HV" };
+                meteringTypesAdapter = new ArrayAdapter<String>(FormEdit.this,
+                        android.R.layout.simple_spinner_item, meteringTypes);
+                meteringTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                formAccountType.setAdapter(meteringTypesAdapter);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+    public void getFiles() {
+        try {
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/" + serviceConnections.getId());
+            File[] files = directory.listFiles();
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1,
+                    getFileNames(files));
+
+            filesList.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertHelpers.infoDialog(this, "Error Getting Files", e.getMessage());
+        }
+    }
+
+    private String[] getFileNames(File[] files) {
+        if (files == null) {
+            return new String[0]; // Return an empty array if files is null
+        }
+
+        String[] fileNames = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            fileNames[i] = files[i].getName(); // Extract the file name
+            Log.e("TEST", files[i].getName() + "");
+        }
+        return fileNames;
+    }
+
 }

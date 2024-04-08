@@ -9,6 +9,7 @@ import androidx.room.Room;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.lopez.julz.inspectionv2.api.ServiceConnections;

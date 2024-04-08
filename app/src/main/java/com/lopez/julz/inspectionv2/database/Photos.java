@@ -16,18 +16,20 @@ public class Photos {
     @ColumnInfo(name = "Path")
     private String Path;
 
-
     @ColumnInfo(name = "ServiceConnectionId")
     private String ServiceConnectionId;
+
+    @ColumnInfo(name = "UploadStatus")
+    private String UploadStatus;
 
     public Photos() {
     }
 
-    public Photos(String path, String serviceConnectionId) {
+    public Photos(String path, String serviceConnectionId, String uploadStatus) {
         Path = path;
         ServiceConnectionId = serviceConnectionId;
+        UploadStatus = uploadStatus;
     }
-
 
     public int getId() {
         return id;
@@ -51,5 +53,13 @@ public class Photos {
 
     public void setServiceConnectionId(String serviceConnectionId) {
         ServiceConnectionId = serviceConnectionId;
+    }
+
+    public String getUploadStatus() {
+        return UploadStatus;
+    }
+
+    public void setUploadStatus(String uploadStatus) {
+        UploadStatus = uploadStatus;
     }
 }

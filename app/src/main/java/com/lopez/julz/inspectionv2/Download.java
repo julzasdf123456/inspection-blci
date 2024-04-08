@@ -1,6 +1,7 @@
 package com.lopez.julz.inspectionv2;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,9 +12,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,12 +31,19 @@ import com.lopez.julz.inspectionv2.database.LocalServiceConnections;
 import com.lopez.julz.inspectionv2.database.ServiceConnectionInspectionsDao;
 import com.lopez.julz.inspectionv2.database.ServiceConnectionsDao;
 import com.lopez.julz.inspectionv2.database.Settings;
+import com.lopez.julz.inspectionv2.helpers.AlertHelpers;
+import com.lopez.julz.inspectionv2.helpers.FileExtractor;
 import com.lopez.julz.inspectionv2.helpers.ObjectHelpers;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +67,9 @@ public class Download extends AppCompatActivity {
     public String userid;
 
     public Settings settings;
+
+    public AlertDialog progressDialog;
+    public List<ServiceConnections> tmpScList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,13 +259,97 @@ public class Download extends AppCompatActivity {
             super.onPostExecute(unused);
             String data = convertListIdToString(serviceConnectionsList);
 
+            tmpScList = new ArrayList<>();
+            tmpScList.addAll(serviceConnectionsList);
+
             notifyDownloaded(data);
 
             serviceConnectionsList.clear();
             serviceConnectionsAdapter.notifyDataSetChanged();
 
+            /**
+             * DOWNLOAD ASSOCIATED FILES
+             */
+            progressDialog = AlertHelpers.progressDialog(Download.this, "Downloading", "Downloading data and files. Please wait...");
+            progressDialog.show();
+            downloadFiles();
+        }
+    }
 
-            Snackbar.make(download_recyclerview, "All data downloaded", Snackbar.LENGTH_LONG).show();
+    public void downloadFiles() {
+        try {
+            if (tmpScList != null && tmpScList.size() > 0) {
+                ServiceConnections sc = tmpScList.get(0);
+
+                if (sc != null) {
+                    String serviceId = sc.getId();
+                    Call<ResponseBody> dlFiles = requestPlaceHolder.getFiles(serviceId);
+                    dlFiles.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                // Assuming permission and external storage availability are already handled
+//                                File downloadsDirectory = new File(Environment.getExternalStorageDirectory() + File.separator + "SC_FILES");
+
+                                File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                                File downloadedFile = new File(downloadsDirectory, ObjectHelpers.getTimeInMillis() + ".zip");
+
+                                if (!downloadedFile.exists()) {
+                                    try (InputStream inputStream = response.body().byteStream();
+                                         OutputStream outputStream = new FileOutputStream(downloadedFile)) {
+                                        byte[] fileReader = new byte[4096];
+                                        while (true) {
+                                            int read = inputStream.read(fileReader);
+                                            if (read == -1) {
+                                                break;
+                                            }
+                                            outputStream.write(fileReader, 0, read);
+                                        }
+                                        outputStream.flush();
+
+                                        // Extract file
+                                        String zipFile = downloadedFile.getAbsolutePath();
+                                        String folderSc = downloadsDirectory.getAbsolutePath() + "/" + serviceId;
+                                        FileExtractor.extractZipFile(zipFile, folderSc);
+
+                                        tmpScList.remove(0);
+                                        downloadFiles();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                                AlertHelpers.infoDialog(Download.this, "Error saving files", response.message());
+                                try {
+                                    Log.e("ERR_DL_FILES", response.errorBody().string());
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call call, Throwable t) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            AlertHelpers.infoDialog(Download.this, "Error downloading files", t.getMessage());
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            } else {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                AlertHelpers.infoDialog(Download.this, "Download Success", "Inspection data and files downloaded!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertHelpers.infoDialog(Download.this, "Error downloading files", e.getMessage());
         }
     }
 
@@ -336,7 +433,8 @@ public class Download extends AppCompatActivity {
                                 serviceConnectionInspectionsList.get(i).getFeeder(),
                                 serviceConnectionInspectionsList.get(i).getBillDeposit(),
                                 serviceConnectionInspectionsList.get(i).getLoadType(),
-                                serviceConnectionInspectionsList.get(i).getRate()
+                                serviceConnectionInspectionsList.get(i).getRate(),
+                                serviceConnectionInspectionsList.get(i).getMeteringType()
                                 );
                         serviceConnectionInspectionsDao.insertAll(newLocalSC);
                     } else {

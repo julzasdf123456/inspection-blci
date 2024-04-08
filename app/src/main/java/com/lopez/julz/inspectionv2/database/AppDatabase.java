@@ -15,8 +15,9 @@ import androidx.room.RoomDatabase;
         PayTransactions.class,
         TotalPayments.class,
         Zones.class,
-        Blocks.class
-}, version = 23)
+        Blocks.class,
+        Materials.class
+}, version = 28)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ServiceConnectionsDao serviceConnectionsDao();
 
@@ -43,4 +44,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BlocksDao blocksDao();
 
     public abstract ZonesDao zonesDao();
+
+    public abstract MaterialsDao materialsDao();
 }

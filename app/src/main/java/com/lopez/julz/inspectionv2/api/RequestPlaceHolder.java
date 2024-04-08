@@ -5,6 +5,7 @@ import com.lopez.julz.inspectionv2.database.Barangays;
 import com.lopez.julz.inspectionv2.database.Blocks;
 import com.lopez.julz.inspectionv2.database.LocalServiceConnectionInspections;
 import com.lopez.julz.inspectionv2.database.MastPoles;
+import com.lopez.julz.inspectionv2.database.Materials;
 import com.lopez.julz.inspectionv2.database.PayTransactions;
 import com.lopez.julz.inspectionv2.database.Photos;
 import com.lopez.julz.inspectionv2.database.Towns;
@@ -51,7 +52,7 @@ public interface RequestPlaceHolder {
 
     @Multipart
     @POST("save-uploaded-images")
-    Call<ResponseBody> saveUploadedImages(@Query("svcId") String svcId, @Part MultipartBody.Part file);
+    Call<ResponseBody> saveUploadedImages(@Query("svcId") String svcId, @Part List<MultipartBody.Part> files);
 
     @POST("receive-mast-poles")
     Call<MastPoles> uploadMastPoles(@Body MastPoles mastPoles);
@@ -64,4 +65,9 @@ public interface RequestPlaceHolder {
 
     @GET("update-downloaded-inspection")
     Call<Void> notifyDownloadedInspection(@Query("Data") String Data);
+
+    @GET("get-files")
+    Call<ResponseBody> getFiles(@Query("id") String id);
+    @POST("receive-material-presets")
+    Call<Materials> receiveMaterialPresets(@Body Materials materials);
 }

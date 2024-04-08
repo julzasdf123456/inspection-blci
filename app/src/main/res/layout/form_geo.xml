@@ -377,6 +377,8 @@
 
     <include layout="@layout/form_confirmations"/>
 
+    <include layout="@layout/form_materials"/>
+
 <!--    ASSESSMENT -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -442,6 +444,12 @@
                     android:paddingBottom="5dp"/>
 
             </RadioGroup>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearAssessment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="clear assessment"/>
 
             <EditText
                 android:id="@+id/formReverificationRemarks"

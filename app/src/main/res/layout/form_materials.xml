@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:contentPadding="20dp"
+        app:cardElevation="3px"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Materials"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/minimize_materials"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    app:icon="@drawable/ic_baseline_remove_24" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/grey"/>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- BOHECO I-->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meterbase Socket"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_meterBaseSocket"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Metalbox Type A"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_metalboxTypeA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Metablbox Type B"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_metalboxTypeB"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pipe #1"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_pipe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Entrance Cap #1"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_entranceCap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Adapter #1"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_adapter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Locknot #1"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_locknot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mailbox"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_mailbox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buckle"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_buckle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PVC Elbow #1"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_pvcElbow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stainless Strap"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_stainlessStrap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Plyboard 17x20 cm"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_plyboard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Strain Insulator (M)"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_strainInsulator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stranded Wire #8"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_straindedWire8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="meters"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stranded Wire #6"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_strandedWire6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="meters"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Twisted Wire #6"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_twistedWire6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="meters"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Twisted Wire #4"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_twistedWire4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="meters"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Compression Tap-2A SU"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_compressionTapAsu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Compression Tap-YTD 250"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_compressionYtdTwoFifty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Compression Tap-YTD 300"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_compressionTapYtdThreeHundred"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Compression Tap-YTD 200"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_compressionTapYtdTwoHundred"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Compression Tap-YTD 150"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_compressionTapYtdOneFifty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Metal Screw"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_metalScrew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Electrical Tape"
+                        android:layout_column="1"
+                        android:layout_marginRight="10dp"/>
+
+                    <EditText
+                        android:id="@+id/materials_electricalTape"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="@drawable/options_custom_form"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:inputType="numberDecimal"
+                        android:hint="pcs"
+                        android:layout_marginRight="5dp"/>
+
+                </TableRow>
+            </TableLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

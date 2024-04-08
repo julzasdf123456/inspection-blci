@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.lopez.julz.inspectionv2.api.ServiceConnectionInspections;
+
 import java.util.List;
 
 @Dao
@@ -24,6 +26,9 @@ public interface ServiceConnectionInspectionsDao {
 
     @Query("SELECT * FROM LocalServiceConnectionInspections WHERE ServiceConnectionId = :svcId")
     LocalServiceConnectionInspections getOneBySvcId(String svcId);
+
+    @Query("SELECT * FROM LocalServiceConnectionInspections WHERE ServiceConnectionId = :svcId")
+    ServiceConnectionInspections getInspectionBySvcId(String svcId);
 
     @Query("DELETE FROM LocalServiceConnectionInspections WHERE id = :id")
     void delete(String id);

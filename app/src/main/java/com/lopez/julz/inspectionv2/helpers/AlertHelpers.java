@@ -40,4 +40,20 @@ public class AlertHelpers {
 
         alertDialog.show();
     }
+
+    public static AlertDialog progressDialog(Context context, String title, String message) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(false);
+            builder.setView(R.layout.progress_dialog)
+                    .setTitle(title)
+                    .setMessage(message);
+
+            return builder.create();
+        } catch (Exception e) {
+            AlertHelpers.infoDialog(context, "Error Showing Dialog", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

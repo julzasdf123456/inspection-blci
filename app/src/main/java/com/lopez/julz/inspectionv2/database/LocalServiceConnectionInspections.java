@@ -222,7 +222,10 @@ public class LocalServiceConnectionInspections {
     @ColumnInfo(name = "Rate")
     private String Rate;
 
-    public LocalServiceConnectionInspections(@NonNull String id, String serviceConnectionId, String SEMainCircuitBreakerAsPlan, String SEMainCircuitBreakerAsInstalled, String SENoOfBranchesAsPlan, String SENoOfBranchesAsInstalled, String poleGIEstimatedDiameter, String poleGIHeight, String poleGINoOfLiftPoles, String poleConcreteEstimatedDiameter, String poleConcreteHeight, String poleConcreteNoOfLiftPoles, String poleHardwoodEstimatedDiameter, String poleHardwoodHeight, String poleHardwoodNoOfLiftPoles, String poleRemarks, String SDWSizeAsPlan, String SDWSizeAsInstalled, String SDWLengthAsPlan, String SDWLengthAsInstalled, String geoBuilding, String geoTappingPole, String geoMeteringPole, String geoSEPole, String firstNeighborName, String firstNeighborMeterSerial, String secondNeighborName, String secondNeighborMeterSerial, String engineerInchargeName, String engineerInchargeTitle, String engineerInchargeLicenseNo, String engineerInchargeLicenseValidity, String engineerInchargeContactNo, String status, String inspector, String dateOfVerification, String estimatedDateForReinspection, String notes, String SDWLengthSubTotal, String looping, String lightingOutlets, String convenienceOutlets, String motor, String totalLoad, String contractedDemand, String contractedEnergy, String distanceFromSecondaryLine, String sizeOfSecondary, String sizeOfSDW, String typeOfSDW, String serviceEntranceStatus, String heightOfSDW, String distanceFromTransformer, String sizeOfTransformer, String transformerNo, String poleNo, String connectedFeeder, String sizeOfSvcPoles, String heightOfSvcPoles, String linePassingPrivateProperty, String writtenConsentByPropertyOwner, String obstructionOfLines, String linePassingRoads, String recommendation, String forPayment, String zone, String block, String feeder, String billDeposit, String loadType, String rate) {
+    @ColumnInfo(name = "MeteringType")
+    private String MeteringType;
+
+    public LocalServiceConnectionInspections(@NonNull String id, String serviceConnectionId, String SEMainCircuitBreakerAsPlan, String SEMainCircuitBreakerAsInstalled, String SENoOfBranchesAsPlan, String SENoOfBranchesAsInstalled, String poleGIEstimatedDiameter, String poleGIHeight, String poleGINoOfLiftPoles, String poleConcreteEstimatedDiameter, String poleConcreteHeight, String poleConcreteNoOfLiftPoles, String poleHardwoodEstimatedDiameter, String poleHardwoodHeight, String poleHardwoodNoOfLiftPoles, String poleRemarks, String SDWSizeAsPlan, String SDWSizeAsInstalled, String SDWLengthAsPlan, String SDWLengthAsInstalled, String geoBuilding, String geoTappingPole, String geoMeteringPole, String geoSEPole, String firstNeighborName, String firstNeighborMeterSerial, String secondNeighborName, String secondNeighborMeterSerial, String engineerInchargeName, String engineerInchargeTitle, String engineerInchargeLicenseNo, String engineerInchargeLicenseValidity, String engineerInchargeContactNo, String status, String inspector, String dateOfVerification, String estimatedDateForReinspection, String notes, String SDWLengthSubTotal, String looping, String lightingOutlets, String convenienceOutlets, String motor, String totalLoad, String contractedDemand, String contractedEnergy, String distanceFromSecondaryLine, String sizeOfSecondary, String sizeOfSDW, String typeOfSDW, String serviceEntranceStatus, String heightOfSDW, String distanceFromTransformer, String sizeOfTransformer, String transformerNo, String poleNo, String connectedFeeder, String sizeOfSvcPoles, String heightOfSvcPoles, String linePassingPrivateProperty, String writtenConsentByPropertyOwner, String obstructionOfLines, String linePassingRoads, String recommendation, String forPayment, String zone, String block, String feeder, String billDeposit, String loadType, String rate, String meteringType) {
         this.id = id;
         ServiceConnectionId = serviceConnectionId;
         this.SEMainCircuitBreakerAsPlan = SEMainCircuitBreakerAsPlan;
@@ -294,6 +297,7 @@ public class LocalServiceConnectionInspections {
         BillDeposit = billDeposit;
         LoadType = loadType;
         Rate = rate;
+        MeteringType = meteringType;
     }
 
     public LocalServiceConnectionInspections() {}
@@ -865,5 +869,13 @@ public class LocalServiceConnectionInspections {
 
     public void setRate(String rate) {
         Rate = rate;
+    }
+
+    public String getMeteringType() {
+        return MeteringType;
+    }
+
+    public void setMeteringType(String meteringType) {
+        MeteringType = meteringType;
     }
 }

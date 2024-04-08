@@ -34,6 +34,7 @@ import com.lopez.julz.inspectionv2.database.AppDatabase;
 import com.lopez.julz.inspectionv2.database.LocalServiceConnectionInspections;
 import com.lopez.julz.inspectionv2.database.LocalServiceConnections;
 import com.lopez.julz.inspectionv2.database.MastPoles;
+import com.lopez.julz.inspectionv2.database.Materials;
 import com.lopez.julz.inspectionv2.database.PayTransactions;
 import com.lopez.julz.inspectionv2.database.Photos;
 import com.lopez.julz.inspectionv2.database.ServiceConnectionInspectionsDao;
@@ -43,7 +44,9 @@ import com.lopez.julz.inspectionv2.helpers.AlertHelpers;
 import com.lopez.julz.inspectionv2.helpers.ObjectHelpers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -100,7 +103,15 @@ public class Upload extends AppCompatActivity {
 
         localServiceConnectionInspectionsList = new ArrayList<>();
         serviceConnectionsList = new ArrayList<>();
-        uploadAdapter = new UploadAdapter(serviceConnectionsList, this);
+        uploadAdapter = new UploadAdapter(serviceConnectionsList, this, db, new UploadAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                removeInspectionBySvcId(localServiceConnectionInspectionsList, serviceConnectionsList.get(position).getId());
+                uploadAdapter.removeItem(position);
+                inspectionMaxSize = serviceConnectionsList.size();
+                total_upload.setText("Total Size: " + inspectionMaxSize);
+            }
+        });
         upload_recyclerview.setAdapter(uploadAdapter);
         upload_recyclerview.setLayoutManager(new LinearLayoutManager(this));
         mastPoles = new ArrayList<>();
@@ -120,6 +131,15 @@ public class Upload extends AppCompatActivity {
         new FetchSettings().execute();
     }
 
+    public void removeInspectionBySvcId(List<LocalServiceConnectionInspections> list, String value) {
+        Iterator<LocalServiceConnectionInspections> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            LocalServiceConnectionInspections obj = iterator.next();
+            if (obj.getServiceConnectionId().equals(value)) {
+                iterator.remove();
+            }
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -145,6 +165,8 @@ public class Upload extends AppCompatActivity {
             ServiceConnectionsDao serviceConnectionsDao = db.serviceConnectionsDao();
             for (int i=0; i<localServiceConnectionInspectionsList.size(); i++) {
                 LocalServiceConnections localServiceConnections = serviceConnectionsDao.getOne(localServiceConnectionInspectionsList.get(i).getServiceConnectionId());
+                LocalServiceConnectionInspections insp = db.serviceConnectionInspectionsDao().getOneBySvcId(localServiceConnections.getId());
+                localServiceConnections.setStatus(insp.getStatus());
                 serviceConnectionsList.add(localServiceConnections);
             }
             return null;
@@ -178,6 +200,7 @@ public class Upload extends AppCompatActivity {
                             Toast.makeText(Upload.this, "Error uploading data! " + response.message() + "\n" + response.raw(), Toast.LENGTH_LONG).show();
                         } else {
 //                            setProgress(finalI+1);
+                            new UploadMaterial().execute(localServiceConnectionInspectionsList.get(finalI).getServiceConnectionId());
                             new UpdateUploadedData().execute(localServiceConnectionInspectionsList.get(finalI).getServiceConnectionId());
                             Log.e("UPLOADED", response.message());
                             localServiceConnectionInspectionsList.remove(i);
@@ -332,7 +355,6 @@ public class Upload extends AppCompatActivity {
     }
 
     class UploadImages extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -340,12 +362,18 @@ public class Upload extends AppCompatActivity {
                     for (int i=0; i<serviceConnectionsList.size(); i++) {
                         List<Photos> photosList = db.photosDao().getAllPhotos(serviceConnectionsList.get(i).getId());
 
+                        List<MultipartBody.Part> photoParts = new ArrayList<>();
+
                         for (int j=0; j<photosList.size(); j++) {
                             File imgFile = new File(photosList.get(j).getPath());
                             if (imgFile.exists()) {
-                                uploadFile(imgFile, serviceConnectionsList.get(i).getId());
+                                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imgFile);
+                                MultipartBody.Part part = MultipartBody.Part.createFormData("files[]", imgFile.getName(), requestBody);
+                                photoParts.add(part);
                             }
                         }
+
+                        uploadFile(photoParts, serviceConnectionsList.get(i).getId());
                     }
                 }
             } catch (Exception e) {
@@ -360,31 +388,38 @@ public class Upload extends AppCompatActivity {
         }
     }
 
-    public void uploadFile(File file, String serviceConnectionId) {
+    public void uploadFile(List<MultipartBody.Part> files, String serviceConnectionId) {
         try {
-            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
-            MultipartBody.Part fileBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-
-            Call<ResponseBody> uploadCall = requestPlaceHolder.saveUploadedImages(serviceConnectionId, fileBody);
+            Call<ResponseBody> uploadCall = requestPlaceHolder.saveUploadedImages(serviceConnectionId, files);
 
             uploadCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         if (response.code() == 200) {
-                            Log.e("UPLD_IMG_OK", "Image uploaded : " + serviceConnectionId + " - " + file.getName());
+                            Log.e("UPLD_IMG_OK", "Image uploaded for : " + serviceConnectionId);
                         } else {
-                            Log.e("ERR_UPLOD", response.message());
+                            try {
+                                Log.e("ERR_UPLOD_IMG", response.errorBody().string());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     } else {
                         Log.e("UPLD_IMG_ERR", response.message());
+                        try {
+                            Log.e("ERR_UPLOD_IMG", response.errorBody().string());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("UPLD_IMG_ERR", t.getMessage());
+                    t.printStackTrace();
                 }
             });
         } catch (Exception e) {
@@ -617,6 +652,55 @@ public class Upload extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+
+    public class UploadMaterial extends AsyncTask<String, Void, Void> {
+        Materials material;
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                String svcId = strings[0];
+
+                material = db.materialsDao().getOneByServiceConnectionId(svcId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("ERR_GET_MTRIAL", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            try {
+                if (material != null) {
+                    Call<Materials> materialsCall = requestPlaceHolder.receiveMaterialPresets(material);
+
+                    materialsCall.enqueue(new Callback<Materials>() {
+                        @Override
+                        public void onResponse(Call<Materials> call, Response<Materials> response) {
+                            if (!response.isSuccessful()) {
+                                try {
+                                    Log.e("ERR_UPLD_MTRLS", response.errorBody().string());
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Materials> call, Throwable t) {
+                            Log.e("ERR_UPLD_MTRLS", t.getMessage());
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("ERR_UPLD_MTRLS", e.getMessage());
+                Toast.makeText(Upload.this, "Error uploading materials!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
